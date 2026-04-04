@@ -68,6 +68,6 @@ Use this exact value:
 
 - Expo builds Android (`.apk`) and iOS simulator app (`.app`) when enabled above.
 - Kotlin builds Android artifacts (no iOS `.app` for Kotlin lane).
-- Maestro E2E is disabled by default in the caller so build jobs are the priority.
+- Maestro E2E is enabled by default; `.maestro/smoke.yaml` is included for baseline validation.
 - Use **new runs** (`push` or `Run workflow`) for full execution.
 - `Re-run all jobs` can replay prior context and may skip active-system lanes.
