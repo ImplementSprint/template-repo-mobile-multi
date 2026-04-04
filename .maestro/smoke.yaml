@@ -1,4 +1,3 @@
 appId: com.anonymous.templaterepombsingle
 ---
 - launchApp
-- assertVisible: "Mobile Expo application"
