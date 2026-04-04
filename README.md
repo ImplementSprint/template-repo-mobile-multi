@@ -2,21 +2,44 @@
 
 This repository combines:
 
-- Expo + TypeScript app at repository root (`.`)
-- Native Kotlin Android app in `kotlin/`
+- Expo + TypeScript mobile template at repository root
+- Native Kotlin Android template inside `kotlin/`
 
-Use this as `template-repo-mobile-multi`.
+Use this as the base for `template-repo-mobile-multi`.
+
+## Stack
+
+- Expo SDK 54 + React Native 0.81 (root app)
+- TypeScript strict mode
+- Jest + Detox for Expo app
+- Native Kotlin Android + Gradle (Kotlin DSL) in `kotlin/`
+
+## Structure
+
+```text
+.
+|- src/
+|- tests/
+|- scripts/
+|- kotlin/
+|  |- app/
+|  |- gradle/
+|  |- build.gradle.kts
+|  |- settings.gradle.kts
+```
 
 ## Commands
 
-Expo (root):
+Expo app (root):
 
 - `npm run start`
 - `npm run android`
 - `npm run ios`
+- `npm run test`
+- `npm run lint`
 - `npm run verify`
 
-Kotlin (`kotlin/`):
+Kotlin app (`kotlin/`):
 
 - `npm run kotlin:assembleDebug`
 - `npm run kotlin:assembleRelease`
@@ -25,19 +48,19 @@ Kotlin (`kotlin/`):
 
 ## CI/CD
 
-Caller workflow:
+Workflow caller:
 
 - `.github/workflows/mobile-pipeline-caller.yml`
 
-Central workflow ref:
+Central workflow reference:
 
 - `ImplementSprint/central-workflow/.github/workflows/master-pipeline-mobile.yml@maestro`
 
-Required variable:
+Required repository variable:
 
 - `MOBILE_MULTI_SYSTEMS_JSON`
 
-Use this exact value:
+Recommended value:
 
 ```json
 [
@@ -60,10 +83,3 @@ Use this exact value:
   }
 ]
 ```
-
-## Important Run Behavior
-
-- Expo builds Android (`.apk`) and iOS simulator app (`.app`) when enabled above.
-- Kotlin builds Android artifacts (no iOS `.app` for Kotlin lane).
-- Use **new runs** (`push` or `Run workflow`) for full execution.
-- `Re-run all jobs` can replay prior context and may skip active-system lanes.
