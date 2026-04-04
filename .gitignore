@@ -1,0 +1,7 @@
+node_modules
+.expo
+coverage
+*.keystore
+android
+ios
+coverage
