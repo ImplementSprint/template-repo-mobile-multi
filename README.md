@@ -45,6 +45,8 @@ Use this exact value:
     "name": "mobile-expo",
     "dir": ".",
     "mobile_stack": "expo",
+    "node_version": 20,
+    "java_version": "17",
     "enable_android_build": true,
     "enable_ios_build": true,
     "version_stream": "mobile-expo"
@@ -53,6 +55,7 @@ Use this exact value:
     "name": "mobile-kotlin",
     "dir": "kotlin",
     "mobile_stack": "kotlin",
+    "java_version": "17",
     "gradle_task": "assembleRelease bundleRelease",
     "enable_android_build": true,
     "enable_ios_build": false,
@@ -65,5 +68,6 @@ Use this exact value:
 
 - Expo builds Android (`.apk`) and iOS simulator app (`.app`) when enabled above.
 - Kotlin builds Android artifacts (no iOS `.app` for Kotlin lane).
+- Maestro E2E is disabled by default in the caller so build jobs are the priority.
 - Use **new runs** (`push` or `Run workflow`) for full execution.
 - `Re-run all jobs` can replay prior context and may skip active-system lanes.
