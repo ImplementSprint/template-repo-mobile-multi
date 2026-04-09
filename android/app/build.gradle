@@ -99,12 +99,42 @@ android {
     signingConfigs {
         debug {
             def localDebugKeystore = file('debug.keystore')
+            def userAndroidDir = file(System.getProperty("user.home") + "/.android")
+            def userConfigAndroidDir = file(System.getProperty("user.home") + "/.config/.android")
             def userDebugKeystore = file(System.getProperty("user.home") + "/.android/debug.keystore")
+            def userConfigDebugKeystore = file(System.getProperty("user.home") + "/.config/.android/debug.keystore")
 
             if (localDebugKeystore.exists()) {
                 storeFile localDebugKeystore
+            } else if (userConfigDebugKeystore.exists()) {
+                storeFile userConfigDebugKeystore
             } else if (userDebugKeystore.exists()) {
                 storeFile userDebugKeystore
+            } else {
+                if (!userConfigAndroidDir.exists()) {
+                    userConfigAndroidDir.mkdirs()
+                }
+                if (!userAndroidDir.exists()) {
+                    userAndroidDir.mkdirs()
+                }
+
+                // Generate a fallback CI debug keystore in ~/.config/.android so AGP signing can proceed.
+                def generatedDebugKeystore = file(System.getProperty("user.home") + "/.config/.android/debug.keystore")
+                exec {
+                    commandLine "keytool",
+                        "-genkeypair",
+                        "-v",
+                        "-storetype", "PKCS12",
+                        "-keystore", generatedDebugKeystore.absolutePath,
+                        "-storepass", "android",
+                        "-alias", "androiddebugkey",
+                        "-keypass", "android",
+                        "-dname", "CN=Android Debug,O=Android,C=US",
+                        "-keyalg", "RSA",
+                        "-keysize", "2048",
+                        "-validity", "10000"
+                }
+                storeFile generatedDebugKeystore
             }
 
             storePassword 'android'
