@@ -5,7 +5,6 @@ on:
     branches: [test, uat, main]
   pull_request:
     branches: [test, uat, main]
-    types: [opened, synchronize, reopened, labeled]
   workflow_dispatch:
     inputs:
       pipeline_mode:
@@ -32,14 +31,6 @@ on:
         default: true
       enable_governance:
         description: "Run governance checks (Kotlin)"
-        type: boolean
-        default: true
-      enable_maestro:
-        description: "Run Maestro Android E2E"
-        type: boolean
-        default: true
-      enable_maestro_ios:
-        description: "Run Maestro iOS E2E"
         type: boolean
         default: true
       enable_grafana_k6:
@@ -99,5 +90,5 @@ jobs:
       k6_run_only_on_branch: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_run_only_on_branch || 'test,uat,main' }}
       run_deploy: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.run_deploy || 'true') || github.event_name == 'push' }}
       run_promotion: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.run_promotion || 'true') || github.event_name == 'push' }}
-      dry_run: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.dry_run || 'false') || false }}
+      dry_run: ${{ github.run_attempt > 1 || (github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.dry_run || 'false')) || false }}
     secrets: inherit
