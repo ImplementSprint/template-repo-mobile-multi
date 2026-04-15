@@ -11,7 +11,12 @@ on:
         description: "Pipeline mode (auto|single|multi)"
         type: choice
         options: [auto, single, multi]
-        default: multi
+        default: auto
+      stack_filter:
+        description: "Optional stack filter (all|expo|react-native|kotlin)"
+        type: choice
+        options: [all, expo, react-native, kotlin]
+        default: all
       enable_lint:
         description: "Run lint checks"
         type: boolean
@@ -31,7 +36,7 @@ on:
       enable_grafana_k6:
         description: "Run Grafana k6 cloud checks"
         type: boolean
-        default: false
+        default: true
       k6_script_path:
         description: "Path to k6 script or performance tests directory"
         type: string
@@ -69,14 +74,17 @@ permissions:
 
 jobs:
   call-orchestrator:
-    uses: ImplementSprint/central-workflow/.github/workflows/master-pipeline-mobile.yml@maestro
+    uses: ImplementSprint/central-workflow/.github/workflows/master-pipeline-mobile.yml@main
     with:
-      pipeline_mode: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pipeline_mode || 'multi' }}
+      pipeline_mode: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pipeline_mode || 'auto' }}
+      stack_filter: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.stack_filter || 'all' }}
       enable_lint: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_lint || 'true') || true }}
       enable_security_scan: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_security_scan || 'true') || true }}
       enable_sonar: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_sonar || 'true') || true }}
       enable_governance: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_governance || 'true') || true }}
-      enable_grafana_k6: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_grafana_k6 || 'false') || false }}
+      enable_maestro: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_maestro || 'true') || true }}
+      enable_maestro_ios: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_maestro_ios || 'true') || true }}
+      enable_grafana_k6: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_grafana_k6 || 'true') || true }}
       k6_script_path: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_script_path || 'tests/performance' }}
       k6_base_url: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_base_url || '' }}
       k6_run_only_on_branch: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_run_only_on_branch || 'test,uat,main' }}
